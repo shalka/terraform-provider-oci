@@ -3,12 +3,16 @@
 package main
 
 import (
+	"context"
 	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/oracle/bmcs-go-sdk"
 
 	"github.com/oracle/terraform-provider-oci/crud"
+
+	"bitbucket.aka.lgl.grungy.us/golang-sdk2/common"
+	"bitbucket.aka.lgl.grungy.us/golang-sdk2/identity"
 )
 
 func APIKeyDatasource() *schema.Resource {
@@ -29,6 +33,8 @@ func APIKeyDatasource() *schema.Resource {
 }
 
 func readAPIKeys(d *schema.ResourceData, m interface{}) (e error) {
+	// myclient := identity.IdentityClient{}
+
 	client := m.(*OracleClients)
 	sync := &APIKeyDatasourceCrud{}
 	sync.D = d
@@ -38,12 +44,16 @@ func readAPIKeys(d *schema.ResourceData, m interface{}) (e error) {
 
 type APIKeyDatasourceCrud struct {
 	crud.BaseCrud
-	Res *baremetal.ListAPIKeyResponses
+	Response identity.ListApiKeysResponse
 }
 
 func (s *APIKeyDatasourceCrud) Get() (e error) {
 	userID := s.D.Get("user_id").(string)
-	s.Res, e = s.Client.ListAPIKeys(userID)
+	client := identity.IdentityClient{}
+	request := identity.ListApiKeysRequest{
+		common.String(userID),
+	}
+	s.Response, e = client.ListApiKeys(context.Background(), request)
 	return
 }
 

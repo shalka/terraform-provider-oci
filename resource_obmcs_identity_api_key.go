@@ -10,6 +10,8 @@ import (
 	"github.com/oracle/bmcs-go-sdk"
 
 	"github.com/oracle/terraform-provider-oci/crud"
+	"bitbucket.aka.lgl.grungy.us/golang-sdk2/identity"
+	"bitbucket.aka.lgl.grungy.us/golang-sdk2/common"
 )
 
 func APIKeyResource() *schema.Resource {
@@ -66,6 +68,12 @@ func APIKeyResource() *schema.Resource {
 }
 
 func createAPIKey(d *schema.ResourceData, m interface{}) (e error) {
+	//c := identity.NewIdentityClientForRegion(TEST_REGION_FOR_IDENTITY)
+	//request := identity.UploadApiKeyRequest{}
+	//request.UserID = common.String(userID)
+	//request.Key = common.String("some key")
+	//resCreate, err := c.UploadApiKey(context.Background(), request)
+
 	client := m.(*OracleClients)
 	sync := &APIKeyResourceCrud{}
 	sync.D = d
